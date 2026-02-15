@@ -1,0 +1,1 @@
+<div class="md:text-9xl sm:text-6xl mb-4 py-12 text-center {{ $bgColor }}">{{ $slot }}</div>
