@@ -1,0 +1,170 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cormorant: "Cormorant Garamond", Georgia, serif;
+  --font-jakarta: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  background: #07070a;
+  color: #f4f1eb;
+  font-family: var(--font-jakarta);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* Selection */
+::selection { background: rgba(157, 124, 255, 0.3); color: #f4f1eb; }
+
+/* ============================================
+   TIPTAP RICH EDITOR STYLES
+   ============================================ */
+.tiptap-editor {
+  outline: none;
+  min-height: 400px;
+  font-family: var(--font-jakarta);
+  font-size: 16px;
+  line-height: 1.85;
+  color: #f4f1eb;
+  caret-color: #e8a045;
+}
+
+.tiptap-editor p {
+  margin-bottom: 1rem;
+  color: #d8d4cc;
+}
+
+.tiptap-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+  float: left;
+  height: 0;
+  font-style: italic;
+  font-family: var(--font-cormorant);
+  font-size: 18px;
+}
+
+.tiptap-editor h1 {
+  font-family: var(--font-cormorant);
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #f4f1eb;
+  margin-bottom: 1rem;
+  margin-top: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.tiptap-editor h2 {
+  font-family: var(--font-cormorant);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #f4f1eb;
+  margin-bottom: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.tiptap-editor h3 {
+  font-family: var(--font-jakarta);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f4f1eb;
+  margin-bottom: 0.5rem;
+  margin-top: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.tiptap-editor strong { color: #f4f1eb; font-weight: 600; }
+.tiptap-editor em { color: #c8c4bc; font-style: italic; }
+.tiptap-editor u { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232, 160, 69, 0.5); }
+
+.tiptap-editor blockquote {
+  border-left: 2px solid #e8a045;
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  margin: 1.25rem 0;
+  color: #a09a8e;
+  font-family: var(--font-cormorant);
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.tiptap-editor ul,
+.tiptap-editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: #d8d4cc;
+}
+
+.tiptap-editor ul li { list-style: disc; margin-bottom: 0.4rem; }
+.tiptap-editor ol li { list-style: decimal; margin-bottom: 0.4rem; }
+
+.tiptap-editor hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 2rem 0;
+}
+
+.tiptap-editor a {
+  color: #9d7cff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.tiptap-editor code {
+  font-family: var(--font-jetbrains);
+  background: rgba(157, 124, 255, 0.1);
+  color: #b89dff;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+.tiptap-editor mark {
+  background: rgba(232, 160, 69, 0.25);
+  color: #f4f1eb;
+  border-radius: 2px;
+  padding: 0.05em 0.2em;
+}
+
+/* ============================================
+   STAGE BADGE
+   ============================================ */
+.stage-seed { color: #6bcb77; }
+.stage-growing { color: #e8a045; }
+.stage-published { color: #9d7cff; }
+
+/* ============================================
+   GRAIN TEXTURE OVERLAY
+   ============================================ */
+.grain-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
