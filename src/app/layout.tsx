@@ -1,19 +1,26 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Preloader from "@/components/Preloader"; // Import the preloader
+import Preloader from "@/components/Preloader";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "BlogPotro — Write. Evolve. Connect.",
-  description: "A thinking-first blog platform with version control, mind maps, AI scoring, lofi music, and writing streaks.",
+  description: "A social writing platform where people privately develop ideas, publish thoughtful manuscripts, and connect in a global constellation.",
+  openGraph: {
+    title: "BlogPotro — Social Writing Platform",
+    description: "Private by default. Public by choice. Develop ideas privately and publish thoughtful essays to the world.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="grain-overlay">
-        {/* Mount the preloader globally */}
-        <Preloader />
-        {children}
+        <AuthProvider>
+          <Preloader />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -5,26 +5,24 @@ import { createPortal } from "react-dom";
 import { useBlogStore } from "@/store/useBlogStore";
 import { Flame, Target, TrendingUp, Calendar, X, Quote } from "lucide-react";
 
-// The motivational quotes that will cycle as the user's streak changes
+// Motivational quotes cycling through writing sessions
 const MOTIVATION = [
-  "A writer writes. Always. Keep the momentum going.",
-  "You can't edit a blank page. Get the words out.",
-  "The art of writing is the art of discovering what you believe.",
-  "Consistency beats intensity. Show up every day.",
-  "Your future self will thank you for the words you write today.",
-  "Start writing. The inspiration will follow."
+  "A writer writes. Always. Keep the momentum alive.",
+  "You can't edit a blank page. Let the raw words tumble out.",
+  "The art of writing is the art of discovering what you truly believe.",
+  "Consistency beats intensity. Show up at the desk every single day.",
+  "Your future self will thank you for the prose you crafted today.",
+  "Begin the paragraph. The muse will join you halfway."
 ];
 
 function GitHubCalendar({ days }: { days: string[] }) {
   const daySet = new Set(days);
   
-  // Build the GitHub-style calendar array
   const weeks = useMemo(() => {
     const finalCells = [];
     const tempCells = [];
-    const TOTAL_DAYS = 90; // Last 90 days (~3 months)
+    const TOTAL_DAYS = 90;
 
-    // Generate the last 90 days based on UTC strings to match local storage
     for (let i = TOTAL_DAYS - 1; i >= 0; i--) {
       const d = new Date(Date.now() - i * 86400000);
       const dateStr = d.toISOString().slice(0, 10);
@@ -35,7 +33,6 @@ function GitHubCalendar({ days }: { days: string[] }) {
       });
     }
 
-    // Pad the beginning so the grid aligns correctly with Sunday (0)
     const firstDateObj = new Date(Date.now() - (TOTAL_DAYS - 1) * 86400000);
     const emptyCellsCount = firstDateObj.getDay(); 
     for (let i = 0; i < emptyCellsCount; i++) {
@@ -44,7 +41,6 @@ function GitHubCalendar({ days }: { days: string[] }) {
     
     finalCells.push(...tempCells);
 
-    // Group into columns (weeks) of 7 days (Sun - Sat)
     const weeksArr = [];
     for (let i = 0; i < finalCells.length; i += 7) {
       weeksArr.push(finalCells.slice(i, i + 7));
@@ -57,18 +53,18 @@ function GitHubCalendar({ days }: { days: string[] }) {
       {weeks.map((week, wi) => (
         <div key={wi} className="flex flex-col gap-1">
           {week.map((cell, ci) => {
-            if (!cell) return <div key={`empty-${ci}`} className="w-3.5 h-3.5" />; // Empty padding
+            if (!cell) return <div key={`empty-${ci}`} className="w-3.5 h-3.5" />;
             return (
               <div
                 key={cell.date}
-                title={`${cell.date}${cell.hasData ? " (Wrote)" : ""}`}
-                className="w-3.5 h-3.5 rounded-[3px] transition-all duration-300"
+                title={`${cell.date}${cell.hasData ? " (Manuscript written)" : ""}`}
+                className="w-3.5 h-3.5 rounded-[3px] transition-all duration-150"
                 style={{
-                  background: cell.hasData ? "#6bcb77" : "rgba(255,255,255,0.04)", // GitHub Green
+                  background: cell.hasData ? "#10B981" : "#EAE3D5",
                   border: cell.isToday 
-                    ? `1px solid ${cell.hasData ? "#4ade80" : "rgba(255,255,255,0.3)"}` 
-                    : "1px solid transparent",
-                  opacity: cell.hasData ? (cell.isToday ? 1 : 0.8) : 1,
+                    ? "1.5px solid #18181B" 
+                    : cell.hasData ? "1px solid #065F46" : "1px solid #DBD2C0",
+                  transform: cell.isToday ? "scale(1.1)" : "none",
                 }}
               />
             );
@@ -84,103 +80,94 @@ export default function StreakWidget() {
   const [mounted, setMounted] = useState(false);
   const streak = useBlogStore((s) => s.streak);
 
-  // We need to wait until mounted to use React Portals safely in Next.js
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const DAILY_GOAL = 200;
-  const progress = Math.min((streak.todayWords / DAILY_GOAL) * 100, 100);
   const isOnFire = streak.currentStreak >= 3;
-  
-  // Pick a dynamic quote based on their streak number
   const quote = MOTIVATION[streak.currentStreak % MOTIVATION.length];
 
   return (
     <>
-      {/* Nav trigger */}
+      {/* Nav trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-110 flex-shrink-0"
-        style={{
-          background: isOnFire ? "rgba(248,113,113,0.1)" : "rgba(255,255,255,0.04)",
-          border: isOnFire ? "1px solid rgba(248,113,113,0.25)" : "1px solid rgba(255,255,255,0.08)",
-          color: isOnFire ? "#f87171" : "#6b6880",
-        }}
-        title="Writing Streak"
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
+          isOnFire
+            ? "bg-pastel-rose-solid text-ink-primary neo-border-sm neo-shadow-xs"
+            : "bg-paper-200 text-ink-primary neo-border-sm hover:bg-paper-300 neo-shadow-xs"
+        }`}
+        style={{ fontFamily: "var(--font-jetbrains)" }}
+        title="Writing Streak Tracker"
       >
-        <Flame size={13} style={{ color: isOnFire ? "#f87171" : "#5e5a55" }} />
-        <span style={{ fontFamily: "var(--font-jetbrains)" }}>{streak.currentStreak}</span>
+        <Flame size={14} strokeWidth={2.4} className={isOnFire ? "text-rose animate-bounce" : "text-amber"} />
+        <span>{streak.currentStreak}d</span>
       </button>
 
-      {/* Modal Popup - Teleported to document.body via Portal to escape Navbar CSS restrictions */}
+      {/* Modal Popup */}
       {mounted && open && createPortal(
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-          style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
+          style={{ background: "rgba(24, 24, 27, 0.65)", backdropFilter: "blur(4px)" }}
           onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}
         >
           <div
-            className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl animate-slide-up"
-            style={{ background: "#0d0d12", border: "1px solid rgba(255,255,255,0.1)" }}
+            className="w-full max-w-md rounded-2xl overflow-hidden bg-paper-50 neo-border neo-shadow-xl animate-slide-up"
           >
             {/* Header */}
             <div
-              className="px-6 py-4 flex items-center justify-between border-b"
-              style={{
-                borderColor: "rgba(255,255,255,0.07)",
-                background: isOnFire ? "rgba(248,113,113,0.06)" : "rgba(232,160,69,0.04)",
-              }}
+              className={`px-6 py-4 flex items-center justify-between border-b-2 border-ink ${
+                isOnFire ? "bg-pastel-rose-light" : "bg-pastel-amber-light"
+              }`}
             >
               <div className="flex items-center gap-2">
-                <Flame size={20} className={isOnFire ? "animate-pulse" : ""} style={{ color: isOnFire ? "#f87171" : "#e8a045" }} />
-                <h3 style={{ fontFamily: "var(--font-cormorant)", fontSize: 22, color: "#f4f1eb", fontWeight: 600 }}>
-                  Writer's Streak
+                <Flame size={20} strokeWidth={2.5} className={isOnFire ? "text-rose" : "text-amber"} />
+                <h3 className="font-bold text-2xl text-ink-primary" style={{ fontFamily: "var(--font-cormorant)" }}>
+                  Writer's Daily Streak
                 </h3>
               </div>
-              <button onClick={() => setOpen(false)} className="text-ink-muted hover:text-ink-primary p-1">
-                <X size={18} />
+              <button 
+                onClick={() => setOpen(false)} 
+                className="p-1 rounded-lg bg-paper-50 neo-border-sm text-ink-secondary hover:text-ink-primary neo-shadow-xs"
+              >
+                <X size={16} strokeWidth={2.4} />
               </button>
             </div>
 
             <div className="p-6">
               
-              {/* Motivational Quote Section */}
-              <div className="mb-6 p-4 rounded-xl flex gap-3 items-start" style={{ background: "rgba(157,124,255,0.05)", border: "1px solid rgba(157,124,255,0.15)" }}>
-                <Quote size={18} className="mt-0.5 flex-shrink-0" style={{ color: "#9d7cff" }} />
-                <p className="text-sm italic leading-relaxed" style={{ color: "#b89dff", fontFamily: "var(--font-cormorant)", fontSize: 17 }}>
+              {/* Motivational Quote Box */}
+              <div className="mb-6 p-4 rounded-xl neo-border-sm bg-[#FEFCE8] flex gap-3 items-start neo-shadow-xs">
+                <Quote size={18} className="mt-0.5 flex-shrink-0 text-amber" strokeWidth={2.4} />
+                <p className="text-sm italic leading-relaxed text-ink-primary" style={{ fontFamily: "var(--font-cormorant)", fontSize: 18 }}>
                   "{quote}"
                 </p>
               </div>
 
               {/* Big streak number & Stats Grid */}
-              <div className="flex items-center gap-6 mb-8">
-                <div className="text-center flex-shrink-0">
+              <div className="flex items-center gap-6 mb-7">
+                <div className="text-center flex-shrink-0 p-4 bg-paper-100 rounded-2xl neo-border neo-shadow-sm min-w-[120px]">
                   <div
-                    className="text-7xl font-bold mb-1 leading-none"
-                    style={{
-                      fontFamily: "var(--font-cormorant)",
-                      color: isOnFire ? "#f87171" : "#e8a045",
-                      textShadow: isOnFire ? "0 0 30px rgba(248,113,113,0.3)" : "0 0 30px rgba(232,160,69,0.3)",
-                    }}
+                    className="text-6xl font-bold leading-none text-ink-primary"
+                    style={{ fontFamily: "var(--font-cormorant)" }}
                   >
                     {streak.currentStreak}
                   </div>
-                  <div className="text-xs text-ink-muted uppercase tracking-widest mt-2" style={{ fontFamily: "var(--font-jetbrains)" }}>
-                    {streak.currentStreak === 1 ? "Day" : "Days"} {isOnFire ? "🔥" : "✦"}
+                  <div className="text-xs font-bold text-ink-muted uppercase tracking-wider mt-2" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                    {streak.currentStreak === 1 ? "Day Active" : "Days Active"} {isOnFire ? "🔥" : "✦"}
                   </div>
                 </div>
 
-                <div className="flex-1 grid grid-cols-2 gap-3">
+                <div className="flex-1 grid grid-cols-1 gap-2.5">
                   {[
-                    { label: "Best", value: streak.longestStreak + "d", icon: TrendingUp, color: "#e8a045" },
-                    { label: "Today", value: streak.todayWords + "w", icon: Target, color: "#6bcb77" },
-                  ].map(({ label, value, icon: Icon, color }) => (
-                    <div key={label} className="rounded-xl p-3" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-                      <div className="flex items-center gap-1.5 mb-1.5 text-xs text-ink-muted">
-                        <Icon size={12} style={{ color }} /> {label}
+                    { label: "Best Streak", value: streak.longestStreak + " days", icon: TrendingUp, bg: "bg-pastel-amber-light", badge: "bg-pastel-amber-solid" },
+                    { label: "Today's Words", value: streak.todayWords + " words", icon: Target, bg: "bg-pastel-mint-light", badge: "bg-pastel-mint-solid" },
+                  ].map(({ label, value, icon: Icon, bg, badge }) => (
+                    <div key={label} className={`rounded-xl p-3 neo-border-sm ${bg} flex items-center justify-between`}>
+                      <div className="flex items-center gap-2 text-xs font-bold text-ink-primary" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                        <Icon size={14} strokeWidth={2.4} /> {label}
                       </div>
-                      <div className="text-lg font-semibold" style={{ color, fontFamily: "var(--font-jetbrains)" }}>
+                      <div className={`text-xs font-black px-2 py-0.5 rounded neo-border-sm ${badge} text-ink-primary`} style={{ fontFamily: "var(--font-jetbrains)" }}>
                         {value}
                       </div>
                     </div>
@@ -188,26 +175,25 @@ export default function StreakWidget() {
                 </div>
               </div>
 
-              {/* GitHub Heatmap Calendar */}
+              {/* Heatmap Calendar */}
               <div>
-                <div className="flex items-center justify-between mb-3 text-xs text-ink-muted">
-                  <div className="flex items-center gap-1.5"><Calendar size={12} /> Contributions</div>
+                <div className="flex items-center justify-between mb-2.5 text-xs font-bold text-ink-muted" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                  <div className="flex items-center gap-1.5"><Calendar size={13} strokeWidth={2.2} /> Writing Activity</div>
                   <span>Last 90 days</span>
                 </div>
                 
-                {/* The Calendar */}
-                <div className="p-4 rounded-xl mb-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
+                {/* The Calendar Grid */}
+                <div className="p-4 rounded-xl neo-border-sm bg-paper-100 mb-3">
                   <GitHubCalendar days={streak.writingDays} />
                 </div>
 
                 {/* Legend */}
-                <div className="flex items-center justify-end gap-1.5 text-[10px] text-ink-muted">
-                  <span>Less</span>
-                  <div className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "rgba(255,255,255,0.04)" }} />
-                  <div className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "rgba(107,203,119,0.4)" }} />
-                  <div className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "rgba(107,203,119,0.7)" }} />
-                  <div className="w-2.5 h-2.5 rounded-[2px]" style={{ background: "#6bcb77" }} />
-                  <span>More</span>
+                <div className="flex items-center justify-end gap-1.5 text-[10px] font-bold text-ink-muted" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                  <span>Rest</span>
+                  <div className="w-3 h-3 rounded-[2px] bg-[#EAE3D5] border border-[#DBD2C0]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#6EE7B7] border border-[#059669]" />
+                  <div className="w-3 h-3 rounded-[2px] bg-[#10B981] border border-[#047857]" />
+                  <span>Written</span>
                 </div>
               </div>
 

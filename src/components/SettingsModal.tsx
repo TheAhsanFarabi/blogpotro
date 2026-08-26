@@ -1,6 +1,6 @@
 "use client";
 
-import { X, AlertTriangle, Trash2 } from "lucide-react";
+import { X, AlertTriangle, Trash2, Sliders } from "lucide-react";
 import { useBlogStore } from "@/store/useBlogStore";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +16,7 @@ export default function SettingsModal({ open, onClose }: Props) {
   if (!open) return null;
 
   const handleReset = () => {
-    if (confirm("Are you absolutely sure? This will wipe all blogs, API keys, and writing streaks permanently.")) {
+    if (confirm("Are you absolutely sure? This will wipe all manuscripts, snapshots, API keys, and writing streaks from your browser.")) {
       resetAllData();
       onClose();
       router.push("/editor"); 
@@ -25,39 +25,48 @@ export default function SettingsModal({ open, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(6px)" }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ background: "rgba(24, 24, 27, 0.65)", backdropFilter: "blur(4px)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="w-full max-w-sm rounded-2xl p-6 shadow-2xl animate-slide-up"
-        style={{ background: "#0d0d12", border: "1px solid rgba(255,255,255,0.1)" }}
+        className="w-full max-w-sm bg-paper-50 rounded-2xl p-6 sm:p-7 neo-border neo-shadow-xl animate-slide-up"
       >
-        <div className="flex items-center justify-between mb-5">
-          <h2 style={{ fontFamily: "var(--font-cormorant)" }} className="text-2xl font-semibold text-ink-primary">
-            Settings
-          </h2>
-          <button onClick={onClose} className="text-ink-muted hover:text-ink-primary transition-colors p-1">
-            <X size={18} />
+        <div className="flex items-center justify-between mb-5 border-b-2 border-ink pb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-paper-200 neo-border-sm flex items-center justify-center text-ink-primary">
+              <Sliders size={16} strokeWidth={2.4} />
+            </div>
+            <h2 style={{ fontFamily: "var(--font-cormorant)" }} className="text-2xl font-bold text-ink-primary">
+              Settings & Storage
+            </h2>
+          </div>
+          <button 
+            onClick={onClose} 
+            className="p-1 rounded-lg bg-paper-200 neo-border-sm text-ink-secondary hover:text-ink-primary neo-shadow-xs transition-colors"
+          >
+            <X size={16} strokeWidth={2.4} />
           </button>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           {/* Danger Zone */}
-          <div className="p-4 rounded-xl" style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.15)" }}>
-            <div className="flex items-center gap-2 mb-2 text-red-400">
-              <AlertTriangle size={16} />
-              <h3 className="font-medium text-sm">Danger Zone</h3>
+          <div className="p-4 rounded-xl bg-pastel-rose-light neo-border-sm">
+            <div className="flex items-center gap-2 mb-2 text-ink-primary">
+              <AlertTriangle size={16} strokeWidth={2.4} className="text-rose" />
+              <h3 className="font-bold text-xs uppercase tracking-wider" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                Danger Zone
+              </h3>
             </div>
-            <p className="text-xs text-ink-secondary mb-4 leading-relaxed">
-              This will permanently delete all your blogs, version histories, AI scores, and writing streaks from this browser. This action cannot be undone.
+            <p className="text-xs text-ink-secondary mb-4 leading-relaxed font-medium">
+              Permanently delete all manuscripts, version histories, Gemini evaluations, and daily writing streaks from this browser.
             </p>
             <button
               onClick={handleReset}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all hover:brightness-110"
-              style={{ background: "rgba(248,113,113,0.15)", color: "#f87171", border: "1px solid rgba(248,113,113,0.3)" }}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold bg-pastel-rose-solid text-ink-primary neo-btn-sm"
+              style={{ fontFamily: "var(--font-jetbrains)" }}
             >
-              <Trash2 size={14} /> Erase All Data
+              <Trash2 size={14} strokeWidth={2.4} /> Erase All Local Data
             </button>
           </div>
         </div>

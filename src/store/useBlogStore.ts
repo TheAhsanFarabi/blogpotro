@@ -15,62 +15,65 @@ export interface StreakData {
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
-const SEED_BLOGS: Blog[] = [
-  // ... (Keep your existing SEED_BLOGS array here)
-  {
-    id: "seed-1",
-    title: "The paradox of choice",
-    content: "<p>We live in an era of unprecedented options. Every decision—from what to eat to where to live—comes with hundreds of variations, and yet, somehow, we feel less satisfied than ever.</p><p>Barry Schwartz called this the <em>paradox of choice</em>. More options should mean more freedom. But instead, they create paralysis, regret, and quiet anxiety that follows us everywhere.</p><p>Maybe the path to contentment isn't more options — it's the art of choosing deliberately and moving on.</p>",
-    tags: ["philosophy", "psychology", "life"],
-    stage: "published",
-    scores: { human: 84, clarity: 79, accuracy: 72 },
-    suggestions: [
-      "Consider adding a personal anecdote to ground the philosophical argument.",
-      "The conclusion could be stronger — what does 'choosing deliberately' look like in practice?",
-      "Reference more contemporary research to support Schwartz's original findings.",
-    ],
-    versions: [
-      { v: "v1", message: "Raw brain dump", timestamp: "3 days ago", wordCount: 45, content: "<p>We live in an era of unprecedented options. Every decision comes with hundreds of variations, and yet, somehow, we feel less satisfied than ever.</p>" },
-      { v: "v2", message: "Added Schwartz reference", timestamp: "2 days ago", wordCount: 98, content: "<p>We live in an era of unprecedented options. Every decision—from what to eat to where to live—comes with hundreds of variations, and yet, somehow, we feel less satisfied than ever.</p><p>Barry Schwartz called this the <em>paradox of choice</em>. More options should mean more freedom. But instead, they create paralysis, regret, and quiet anxiety.</p>" },
-      { v: "v3", message: "Final polish", timestamp: "6 hours ago", wordCount: 132, content: "<p>We live in an era of unprecedented options. Every decision—from what to eat to where to live—comes with hundreds of variations, and yet, somehow, we feel less satisfied than ever.</p><p>Barry Schwartz called this the <em>paradox of choice</em>. More options should mean more freedom. But instead, they create paralysis, regret, and quiet anxiety that follows us everywhere.</p><p>Maybe the path to contentment isn't more options — it's the art of choosing deliberately and moving on.</p>" },
-    ],
-    createdAt: Date.now() - 259200000,
-    updatedAt: Date.now() - 21600000,
-  },
-  {
-    id: "seed-2",
-    title: "Building in public",
-    content: "<p>There is something terrifying about showing your unfinished work to the world. The imperfection is visible. The pivots are traceable. The failures are public record.</p><p>But there is also something incredibly liberating about it. When you build in public, you get feedback before it is too late to act on it. You build real accountability. You find your people — the ones who are interested in the journey, not just the destination.</p>",
-    tags: ["startup", "writing", "community"],
-    stage: "growing",
-    scores: { human: 71, clarity: 88, accuracy: 65 },
-    suggestions: [
-      "Great clarity! Add more emotional vulnerability to boost the human score.",
-      "Include a specific example of feedback you received by building in public.",
-      "The ending is strong — consider making the opening even more provocative.",
-    ],
-    versions: [
-      { v: "v1", message: "Quick outline", timestamp: "5 days ago", wordCount: 32, content: "<p>There is something terrifying about showing your unfinished work to the world. The imperfection is visible.</p>" },
-      { v: "v2", message: "Full first draft", timestamp: "3 days ago", wordCount: 107, content: "<p>There is something terrifying about showing your unfinished work to the world. The imperfection is visible. The pivots are traceable. The failures are public record.</p><p>But there is also something incredibly liberating about it. When you build in public, you get feedback before it is too late to act on it. You build real accountability. You find your people — the ones who are interested in the journey, not just the destination.</p>" },
-    ],
-    createdAt: Date.now() - 432000000,
-    updatedAt: Date.now() - 259200000,
-  },
-  {
-    id: "seed-3",
-    title: "Why mornings feel different",
-    content: "<p>There is a quality of light in the early morning that does not exist at any other time of day. It is not just the color — it is the silence, the emptiness of the world before it fills up with noise and urgency.</p><p>In that window, between five and seven, the mind moves differently. Thoughts arrive fully formed rather than fragmented.</p>",
-    tags: ["mindfulness", "life", "writing"],
-    stage: "seed",
-    scores: null,
-    suggestions: [],
-    versions: [
-      { v: "v1", message: "Morning thought", timestamp: "2 hours ago", wordCount: 67, content: "<p>There is a quality of light in the early morning that does not exist at any other time of day. It is not just the color — it is the silence, the emptiness of the world before it fills up with noise and urgency.</p><p>In that window, between five and seven, the mind moves differently. Thoughts arrive fully formed rather than fragmented.</p>" },
-    ],
-    createdAt: Date.now() - 7200000,
-    updatedAt: Date.now() - 7200000,
+function calculateStreak(days: string[]): { currentStreak: number; longestStreak: number } {
+  if (!days || days.length === 0) {
+    return { currentStreak: 0, longestStreak: 0 };
   }
-];
+
+  const uniqueDays = Array.from(new Set(days)).sort();
+  const today = todayStr();
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+  const lastDay = uniqueDays[uniqueDays.length - 1];
+  const isActive = lastDay === today || lastDay === yesterday;
+
+  if (!isActive) {
+    let max = 1;
+    let curr = 1;
+    for (let i = 1; i < uniqueDays.length; i++) {
+      const prev = new Date(uniqueDays[i - 1]).getTime();
+      const currD = new Date(uniqueDays[i]).getTime();
+      const diff = Math.round((currD - prev) / 86400000);
+      if (diff === 1) {
+        curr++;
+        if (curr > max) max = curr;
+      } else if (diff > 1) {
+        curr = 1;
+      }
+    }
+    return { currentStreak: 0, longestStreak: max };
+  }
+
+  let currentStreak = 1;
+  for (let i = uniqueDays.length - 1; i > 0; i--) {
+    const d2 = new Date(uniqueDays[i]).getTime();
+    const d1 = new Date(uniqueDays[i - 1]).getTime();
+    const diff = Math.round((d2 - d1) / 86400000);
+    if (diff === 1) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
+
+  let longestStreak = currentStreak;
+  let curr = 1;
+  for (let i = 1; i < uniqueDays.length; i++) {
+    const prev = new Date(uniqueDays[i - 1]).getTime();
+    const currD = new Date(uniqueDays[i]).getTime();
+    const diff = Math.round((currD - prev) / 86400000);
+    if (diff === 1) {
+      curr++;
+      if (curr > longestStreak) longestStreak = curr;
+    } else if (diff > 1) {
+      curr = 1;
+    }
+  }
+
+  return { currentStreak, longestStreak };
+}
+
+const SEED_BLOGS: Blog[] = [];
 
 interface BlogStore {
   blogs: Blog[];
@@ -89,32 +92,24 @@ interface BlogStore {
   setScores: (id: string, scores: BlogScores, suggestions: string[]) => void;
   deleteBlog: (id: string) => void;
   recordWriting: (wordsAdded: number) => void;
-  
-  // ADD THIS LINE
   resetAllData: () => void;
 }
 
 const defaultStreak = (): StreakData => ({
-  currentStreak: 3,
-  longestStreak: 5,
+  currentStreak: 0,
+  longestStreak: 0,
   lastWriteDate: todayStr(),
-  totalWordsAllTime: 1240,
-  todayWords: 87,
+  totalWordsAllTime: 0,
+  todayWords: 0,
   todayDate: todayStr(),
-  writingDays: [
-    new Date(Date.now() - 86400000 * 4).toISOString().slice(0, 10),
-    new Date(Date.now() - 86400000 * 3).toISOString().slice(0, 10),
-    new Date(Date.now() - 86400000 * 2).toISOString().slice(0, 10),
-    new Date(Date.now() - 86400000 * 1).toISOString().slice(0, 10),
-    todayStr(),
-  ],
+  writingDays: [],
 });
 
 export const useBlogStore = create<BlogStore>()(
   persist(
     (set, get) => ({
-      blogs: SEED_BLOGS,
-      currentId: "seed-1",
+      blogs: [],
+      currentId: null,
       geminiKey: "",
       streak: defaultStreak(),
 
@@ -222,54 +217,44 @@ export const useBlogStore = create<BlogStore>()(
       },
 
       recordWriting: (wordsAdded) => {
+        if (wordsAdded <= 0) return;
         set((s) => {
           const today = todayStr();
           const prev = s.streak;
           const isToday = prev.todayDate === today;
-          const wasYesterday = prev.lastWriteDate === new Date(Date.now() - 86400000).toISOString().slice(0, 10);
           const newTodayWords = isToday ? prev.todayWords + wordsAdded : wordsAdded;
-          const newStreak = prev.lastWriteDate === today
-            ? prev.currentStreak
-            : wasYesterday ? prev.currentStreak + 1 : 1;
-          const days = prev.writingDays.includes(today) ? prev.writingDays : [...prev.writingDays, today];
+          const updatedWritingDays = prev.writingDays.includes(today)
+            ? prev.writingDays
+            : [...prev.writingDays, today];
+
+          const { currentStreak, longestStreak } = calculateStreak(updatedWritingDays);
+
           return {
             streak: {
-              currentStreak: newStreak,
-              longestStreak: Math.max(prev.longestStreak, newStreak),
+              currentStreak,
+              longestStreak: Math.max(prev.longestStreak, longestStreak),
               lastWriteDate: today,
               totalWordsAllTime: prev.totalWordsAllTime + wordsAdded,
               todayWords: newTodayWords,
               todayDate: today,
-              writingDays: days,
+              writingDays: updatedWritingDays,
             },
           };
         });
       },
 
-      // ==========================================
-      // ADD THIS NEW ACTION TO WIPE EVERYTHING
-      // ==========================================
       resetAllData: () => {
         set({
           blogs: [],
           currentId: null,
           geminiKey: "",
-          streak: {
-            currentStreak: 0,
-            longestStreak: 0,
-            lastWriteDate: todayStr(),
-            totalWordsAllTime: 0,
-            todayWords: 0,
-            todayDate: todayStr(),
-            writingDays: [],
-          },
+          streak: defaultStreak(),
         });
       },
-      
     }),
     {
-      name: "blogpotro-storage",
-      version: 3,
+      name: "blogpotro-storage-v4",
+      version: 4,
     }
   )
 );

@@ -25,4 +25,9 @@ export interface Blog {
   versions: BlogVersion[];
   createdAt: number;
   updatedAt: number;
+  remoteSlug?: string;
+  publishedAt?: string;
 }
+
+export * from "./database";
+

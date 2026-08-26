@@ -1,40 +1,43 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Music2, Play, Pause, SkipForward, Volume2, VolumeX, ChevronDown, ChevronUp, Radio } from "lucide-react";
+import { Music2, Play, Pause, SkipForward, Volume2, VolumeX, ChevronDown, ChevronUp, Radio, Disc } from "lucide-react";
 
 const STATIONS = [
   {
     id: "lofi-chill",
     name: "Lofi Chill Beats",
-    mood: "Focus",
+    mood: "Focus Writing",
     emoji: "☕",
-    color: "#e8a045",
-    // YouTube embed URLs for lofi streams (publicly available)
+    color: "#F59E0B",
+    bg: "bg-pastel-amber-solid",
     youtubeId: "jfKfPfyJRdk",
   },
   {
     id: "jazzy",
     name: "Jazzy Cafe Vibes",
-    mood: "Creative",
+    mood: "Creative Prose",
     emoji: "🎷",
-    color: "#9d7cff",
+    color: "#8B5CF6",
+    bg: "bg-pastel-violet-solid",
     youtubeId: "kgx4WGK0oNU",
   },
   {
     id: "rainy",
-    name: "Rain + Lofi",
-    mood: "Deep Work",
+    name: "Rain + Manuscript",
+    mood: "Deep Solitude",
     emoji: "🌧",
-    color: "#6bcb77",
+    color: "#10B981",
+    bg: "bg-pastel-mint-solid",
     youtubeId: "mPZkdNFkNps",
   },
   {
     id: "study",
-    name: "Study Session",
-    mood: "Productive",
+    name: "Library Study",
+    mood: "Archival Flow",
     emoji: "📚",
-    color: "#f87171",
+    color: "#F43F5E",
+    bg: "bg-pastel-rose-solid",
     youtubeId: "5qap5aO4i9A",
   },
 ];
@@ -78,8 +81,7 @@ export default function LofiPlayer() {
     if (!playing) setPlaying(true);
   };
 
-  // Waveform bars animation
-  const bars = [3, 6, 4, 7, 5, 8, 4, 6, 3, 7, 5, 4];
+  const bars = [4, 8, 5, 10, 6, 12, 6, 9, 4, 11, 7, 5];
 
   return (
     <>
@@ -87,79 +89,72 @@ export default function LofiPlayer() {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105"
-          style={{
-            background: playing ? `linear-gradient(135deg, ${station.color}cc, ${station.color}88)` : "rgba(20,20,26,0.95)",
-            border: `1px solid ${playing ? station.color + "60" : "rgba(255,255,255,0.12)"}`,
-            boxShadow: playing ? `0 0 20px ${station.color}40` : "0 4px 20px rgba(0,0,0,0.5)",
-          }}
-          title="Lofi Player"
+          className={`fixed bottom-6 right-6 z-40 w-13 h-13 rounded-2xl flex items-center justify-center neo-btn transition-all ${
+            playing ? `${station.bg} text-ink-primary animate-pulse` : "bg-paper-50 text-ink-primary hover:bg-paper-200"
+          }`}
+          title="Lofi Radio Player"
         >
-          <Music2 size={18} style={{ color: playing ? "#fff" : "#6b6880" }} />
+          <Radio size={20} strokeWidth={2.4} />
         </button>
       )}
 
       {/* Player panel */}
       {open && (
         <div
-          className="fixed bottom-6 right-6 z-40 w-72 rounded-2xl overflow-hidden shadow-2xl"
-          style={{ background: "#0d0d12", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 60px rgba(0,0,0,0.7)" }}
+          className="fixed bottom-6 right-6 z-40 w-80 rounded-2xl overflow-hidden bg-paper-50 neo-border neo-shadow-xl animate-slide-up"
         >
           {/* Header */}
           <div
-            className="px-4 py-3 flex items-center justify-between"
-            style={{ background: `linear-gradient(135deg, ${station.color}22, transparent)`, borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+            className="px-4 py-3 flex items-center justify-between border-b-2 border-ink bg-paper-200"
           >
             <div className="flex items-center gap-2">
-              <Radio size={13} style={{ color: station.color }} />
-              <span className="text-xs font-medium text-ink-primary" style={{ fontFamily: "var(--font-jakarta)" }}>
-                Lofi Station
+              <Disc size={15} strokeWidth={2.4} className={playing ? "animate-spin text-ink-primary" : "text-ink-muted"} />
+              <span className="text-xs font-bold text-ink-primary uppercase tracking-wider" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                Editorial Radio
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-ink-muted" style={{ fontFamily: "var(--font-jetbrains)" }}>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded neo-border-sm bg-paper-50 text-ink-primary" style={{ fontFamily: "var(--font-jetbrains)" }}>
                 {fmt(elapsed)}
               </span>
-              <button onClick={() => setOpen(false)} className="text-ink-muted hover:text-ink-primary transition-colors">
-                <ChevronDown size={15} />
+              <button 
+                onClick={() => setOpen(false)} 
+                className="p-1 rounded-md bg-paper-50 neo-border-sm text-ink-secondary hover:text-ink-primary"
+              >
+                <ChevronDown size={14} strokeWidth={2.4} />
               </button>
             </div>
           </div>
 
           {/* Now playing */}
           <div className="px-4 pt-4 pb-2">
-            <div className="flex items-center gap-3">
-              {/* Album art placeholder */}
+            <div className="flex items-center gap-3 p-3 rounded-xl neo-border-sm bg-paper-100 neo-shadow-xs">
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 text-xl"
-                style={{
-                  background: `${station.color}18`,
-                  border: `1px solid ${station.color}30`,
-                }}
+                className="w-12 h-12 rounded-lg neo-border-sm flex items-center justify-center flex-shrink-0 text-2xl bg-paper-50 shadow-inner"
               >
                 {station.emoji}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-ink-primary truncate" style={{ fontFamily: "var(--font-jakarta)" }}>
+                <p className="text-sm font-bold text-ink-primary truncate" style={{ fontFamily: "var(--font-cormorant)", fontSize: 18 }}>
                   {station.name}
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: station.color }}>
-                  {station.mood} mode
+                <p className="text-xs font-bold text-ink-muted mt-0.5 flex items-center gap-1" style={{ fontFamily: "var(--font-jetbrains)" }}>
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: station.color }} />
+                  {station.mood}
                 </p>
               </div>
             </div>
 
             {/* Waveform visualizer */}
-            <div className="flex items-end gap-0.5 h-8 mt-3 mb-2">
+            <div className="flex items-end gap-1 h-8 mt-3 mb-2 px-1">
               {bars.map((h, i) => (
                 <div
                   key={i}
-                  className="flex-1 rounded-sm transition-all"
+                  className="flex-1 rounded-t-sm transition-all"
                   style={{
-                    height: playing ? `${h * (0.5 + 0.5 * Math.abs(Math.sin((Date.now() / 300) + i)))}px` : "3px",
-                    background: playing ? station.color : "rgba(255,255,255,0.1)",
-                    opacity: playing ? 0.7 + 0.3 * (i % 3) / 2 : 1,
-                    animation: playing ? `pulseSoft ${0.4 + i * 0.07}s ease-in-out infinite alternate` : "none",
+                    height: playing ? `${h * (0.4 + 0.6 * Math.abs(Math.sin((Date.now() / 250) + i)))}px` : "3px",
+                    background: playing ? "#18181B" : "#D6CEBD",
+                    opacity: playing ? 1 : 0.6,
                   }}
                 />
               ))}
@@ -167,12 +162,12 @@ export default function LofiPlayer() {
           </div>
 
           {/* Controls */}
-          <div className="px-4 pb-3">
-            <div className="flex items-center justify-between mb-3">
+          <div className="px-4 pb-4">
+            <div className="flex items-center justify-between mb-3 pt-1">
               {/* Volume */}
               <div className="flex items-center gap-2">
-                <button onClick={() => setMuted((m) => !m)} className="text-ink-muted hover:text-ink-primary transition-colors">
-                  {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                <button onClick={() => setMuted((m) => !m)} className="p-1 text-ink-secondary hover:text-ink-primary">
+                  {muted ? <VolumeX size={15} strokeWidth={2.4} /> : <Volume2 size={15} strokeWidth={2.4} />}
                 </button>
                 <input
                   type="range"
@@ -181,8 +176,7 @@ export default function LofiPlayer() {
                   step={1}
                   value={muted ? 0 : volume}
                   onChange={(e) => { setVolume(+e.target.value); setMuted(false); }}
-                  className="w-16 h-1 rounded-full accent-amber appearance-none cursor-pointer"
-                  style={{ accentColor: station.color }}
+                  className="w-16 h-1.5 rounded-full bg-paper-300 accent-ink appearance-none cursor-pointer"
                 />
               </div>
 
@@ -190,17 +184,15 @@ export default function LofiPlayer() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => { setPlaying((p) => !p); if (!playing) setTick((t) => t + 1); }}
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-105"
-                  style={{ background: station.color, color: "#07070a" }}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center neo-btn-sm ${station.bg} text-ink-primary`}
                 >
-                  {playing ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" style={{ marginLeft: 1 }} />}
+                  {playing ? <Pause size={15} strokeWidth={2.8} /> : <Play size={15} strokeWidth={2.8} style={{ marginLeft: 1 }} />}
                 </button>
                 <button
                   onClick={nextStation}
-                  className="w-8 h-8 rounded-full flex items-center justify-center transition-all hover:scale-105"
-                  style={{ background: "rgba(255,255,255,0.06)", color: "#6b6880" }}
+                  className="w-8 h-8 rounded-xl flex items-center justify-center bg-paper-200 neo-border-sm text-ink-primary hover:bg-paper-300 neo-shadow-xs"
                 >
-                  <SkipForward size={14} />
+                  <SkipForward size={14} strokeWidth={2.4} />
                 </button>
               </div>
             </div>
@@ -208,33 +200,32 @@ export default function LofiPlayer() {
             {/* Station list toggle */}
             <button
               onClick={() => setShowStations((s) => !s)}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all hover:brightness-110"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", color: "#6b6880" }}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-ink-primary bg-paper-200 neo-border-sm hover:bg-paper-300 transition-all"
+              style={{ fontFamily: "var(--font-jetbrains)" }}
             >
-              <span>Change station</span>
-              {showStations ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              <span>Select Radio Station</span>
+              {showStations ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </button>
 
             {showStations && (
-              <div className="mt-2 space-y-1">
+              <div className="mt-2 space-y-1.5 max-h-48 overflow-y-auto">
                 {STATIONS.map((s, i) => (
                   <button
                     key={s.id}
                     onClick={() => selectStation(i)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs transition-all hover:brightness-110 text-left"
-                    style={{
-                      background: i === currentStation ? `${s.color}18` : "rgba(255,255,255,0.03)",
-                      border: i === currentStation ? `1px solid ${s.color}35` : "1px solid rgba(255,255,255,0.06)",
-                      color: i === currentStation ? s.color : "#a09a8e",
-                    }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
+                      i === currentStation
+                        ? `${s.bg} text-ink-primary neo-border-sm neo-shadow-xs`
+                        : "bg-paper-100 hover:bg-paper-200 text-ink-secondary border border-paper-300"
+                    }`}
                   >
                     <span>{s.emoji}</span>
-                    <div className="flex-1">
-                      <div className="font-medium">{s.name}</div>
-                      <div className="text-[10px] opacity-60">{s.mood}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="truncate">{s.name}</div>
+                      <div className="text-[10px] opacity-70" style={{ fontFamily: "var(--font-jetbrains)" }}>{s.mood}</div>
                     </div>
                     {i === currentStation && playing && (
-                      <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: s.color }} />
+                      <div className="w-2 h-2 rounded-full bg-ink animate-ping" />
                     )}
                   </button>
                 ))}
@@ -242,7 +233,7 @@ export default function LofiPlayer() {
             )}
           </div>
 
-          {/* Embedded YouTube iframe (hidden — audio only) */}
+          {/* Embedded YouTube iframe (audio only) */}
           {playing && (
             <div style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", opacity: 0, pointerEvents: "none" }}>
               <iframe
@@ -259,3 +250,4 @@ export default function LofiPlayer() {
     </>
   );
 }
+

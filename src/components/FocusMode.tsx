@@ -43,16 +43,17 @@ export default function FocusMode({ onToggle }: Props) {
   return (
     <button
       onClick={toggle}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all hover:brightness-110"
-      style={{
-        background: focused ? "rgba(157,124,255,0.12)" : "rgba(255,255,255,0.04)",
-        border: focused ? "1px solid rgba(157,124,255,0.3)" : "1px solid rgba(255,255,255,0.08)",
-        color: focused ? "#9d7cff" : "#6b6880",
-      }}
-      title={focused ? "Exit Focus Mode (Esc)" : "Focus Mode"}
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+        focused
+          ? "bg-pastel-violet-solid text-ink-primary neo-border-sm neo-shadow-xs"
+          : "bg-paper-200 text-ink-primary neo-border-sm hover:bg-paper-300 neo-shadow-xs"
+      }`}
+      style={{ fontFamily: "var(--font-jetbrains)" }}
+      title={focused ? "Exit Focus Mode (Esc)" : "Distraction-Free Focus Mode"}
     >
-      {focused ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+      {focused ? <Minimize2 size={13} strokeWidth={2.4} /> : <Maximize2 size={13} strokeWidth={2.4} />}
       <span className="hidden sm:inline">{focused ? "Exit Focus" : "Focus"}</span>
     </button>
   );
 }
+

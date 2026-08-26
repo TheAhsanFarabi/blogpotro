@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,8 +6,16 @@
 
 :root {
   --font-cormorant: "Cormorant Garamond", Georgia, serif;
-  --font-jakarta: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-jakarta: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-jetbrains: "JetBrains Mono", monospace;
+  
+  --paper-bg: #FAF7F2;
+  --paper-card: #FFFFFF;
+  --paper-elevated: #F5EFE6;
+  --paper-border: #18181B;
+  --ink-primary: #18181B;
+  --ink-secondary: #52525B;
+  --ink-muted: #8C857B;
 }
 
 * {
@@ -19,152 +27,284 @@
 html,
 body {
   height: 100%;
-  background: #07070a;
-  color: #f4f1eb;
+  background: var(--paper-bg);
+  color: var(--ink-primary);
   font-family: var(--font-jakarta);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ============================================
+   EDITORIAL NEO-BRUTALIST UTILITIES & ACCENTS
+   ============================================ */
+.neo-border {
+  border: 2px solid #18181B;
+}
+
+.neo-border-sm {
+  border: 1.5px solid #18181B;
+}
+
+.neo-shadow-xs {
+  box-shadow: 1.5px 1.5px 0px #18181B;
+}
+
+.neo-shadow-sm {
+  box-shadow: 2px 2px 0px #18181B;
+}
+
+.neo-shadow {
+  box-shadow: 3px 3px 0px #18181B;
+}
+
+.neo-shadow-md {
+  box-shadow: 4px 4px 0px #18181B;
+}
+
+.neo-shadow-lg {
+  box-shadow: 6px 6px 0px #18181B;
+}
+
+.neo-shadow-xl {
+  box-shadow: 8px 8px 0px #18181B;
+}
+
+.neo-btn {
+  border: 2px solid #18181B;
+  box-shadow: 3px 3px 0px #18181B;
+  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neo-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #18181B;
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #18181B;
+}
+
+.neo-btn-sm {
+  border: 1.5px solid #18181B;
+  box-shadow: 2px 2px 0px #18181B;
+  transition: all 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neo-btn-sm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px #18181B;
+}
+
+.neo-btn-sm:active {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 0.5px 0.5px 0px #18181B;
+}
+
+/* Paper Grid Backgrounds */
+.paper-grid {
+  background-color: #FAF7F2;
+  background-image: radial-gradient(#D6CEBD 0.9px, transparent 0.9px);
+  background-size: 20px 20px;
+}
+
+.paper-ruled {
+  background-color: #FAF7F2;
+  background-image: linear-gradient(#E8E0D2 1px, transparent 1px);
+  background-size: 100% 32px;
+}
+
 /* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4EFE6;
+  border-left: 1px solid #E2DACB;
+}
+::-webkit-scrollbar-thumb {
+  background: #18181B;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3F3F46;
+}
 
 /* Selection */
-::selection { background: rgba(157, 124, 255, 0.3); color: #f4f1eb; }
+::selection {
+  background: #FDE68A;
+  color: #18181B;
+}
 
 /* ============================================
-   TIPTAP RICH EDITOR STYLES
+   TIPTAP RICH EDITOR STYLES (EDITORIAL PAPER)
    ============================================ */
 .tiptap-editor {
   outline: none;
-  min-height: 400px;
+  min-height: 480px;
   font-family: var(--font-jakarta);
-  font-size: 16px;
-  line-height: 1.85;
-  color: #f4f1eb;
-  caret-color: #e8a045;
+  font-size: 16.5px;
+  line-height: 1.9;
+  color: #18181B;
+  caret-color: #D97706;
 }
 
 .tiptap-editor p {
-  margin-bottom: 1rem;
-  color: #d8d4cc;
+  margin-bottom: 1.25rem;
+  color: #27272A;
 }
 
 .tiptap-editor p.is-editor-empty:first-child::before {
   content: attr(data-placeholder);
-  color: rgba(255, 255, 255, 0.2);
+  color: #A19B91;
   pointer-events: none;
   float: left;
   height: 0;
   font-style: italic;
   font-family: var(--font-cormorant);
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .tiptap-editor h1 {
   font-family: var(--font-cormorant);
-  font-size: 2.2rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #f4f1eb;
-  margin-bottom: 1rem;
-  margin-top: 1.5rem;
-  letter-spacing: -0.01em;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #18181B;
+  margin-bottom: 1.25rem;
+  margin-top: 2rem;
+  letter-spacing: -0.02em;
 }
 
 .tiptap-editor h2 {
   font-family: var(--font-cormorant);
-  font-size: 1.6rem;
-  font-weight: 500;
-  line-height: 1.3;
-  color: #f4f1eb;
-  margin-bottom: 0.75rem;
-  margin-top: 1.5rem;
+  font-size: 1.85rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #18181B;
+  margin-bottom: 0.85rem;
+  margin-top: 1.75rem;
+  letter-spacing: -0.01em;
 }
 
 .tiptap-editor h3 {
-  font-family: var(--font-jakarta);
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #f4f1eb;
-  margin-bottom: 0.5rem;
-  margin-top: 1.25rem;
+  font-family: var(--font-jetbrains);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #52525B;
+  margin-bottom: 0.6rem;
+  margin-top: 1.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.75rem;
+  letter-spacing: 0.08em;
 }
 
-.tiptap-editor strong { color: #f4f1eb; font-weight: 600; }
-.tiptap-editor em { color: #c8c4bc; font-style: italic; }
-.tiptap-editor u { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(232, 160, 69, 0.5); }
+.tiptap-editor strong {
+  color: #18181B;
+  font-weight: 700;
+}
+
+.tiptap-editor em {
+  color: #3F3F46;
+  font-style: italic;
+  font-family: var(--font-cormorant);
+  font-size: 1.08em;
+}
+
+.tiptap-editor u {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #F59E0B;
+}
 
 .tiptap-editor blockquote {
-  border-left: 2px solid #e8a045;
-  padding: 0.5rem 0 0.5rem 1.25rem;
-  margin: 1.25rem 0;
-  color: #a09a8e;
+  border-left: 3.5px solid #18181B;
+  background: #FEF9EE;
+  padding: 0.85rem 1.25rem;
+  margin: 1.75rem 0;
+  color: #27272A;
   font-family: var(--font-cormorant);
-  font-size: 1.15rem;
+  font-size: 1.28rem;
+  line-height: 1.6;
   font-style: italic;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 2px 2px 0px #18181B;
 }
 
 .tiptap-editor ul,
 .tiptap-editor ol {
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
-  color: #d8d4cc;
+  padding-left: 1.75rem;
+  margin-bottom: 1.25rem;
+  color: #27272A;
 }
 
-.tiptap-editor ul li { list-style: disc; margin-bottom: 0.4rem; }
-.tiptap-editor ol li { list-style: decimal; margin-bottom: 0.4rem; }
+.tiptap-editor ul li {
+  list-style: disc;
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-editor ol li {
+  list-style: decimal;
+  margin-bottom: 0.5rem;
+}
 
 .tiptap-editor hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  margin: 2rem 0;
+  border-top: 2px dashed #D6CEBD;
+  margin: 2.25rem 0;
 }
 
 .tiptap-editor a {
-  color: #9d7cff;
+  color: #7C3AED;
   text-decoration: underline;
   text-underline-offset: 3px;
+  font-weight: 500;
 }
 
 .tiptap-editor code {
   font-family: var(--font-jetbrains);
-  background: rgba(157, 124, 255, 0.1);
-  color: #b89dff;
-  padding: 0.15em 0.4em;
+  background: #F4EFE6;
+  color: #18181B;
+  border: 1px solid #18181B;
+  padding: 0.15em 0.45em;
   border-radius: 4px;
-  font-size: 0.875em;
+  font-size: 0.88em;
+  font-weight: 500;
+  box-shadow: 1px 1px 0px #18181B;
 }
 
 .tiptap-editor mark {
-  background: rgba(232, 160, 69, 0.25);
-  color: #f4f1eb;
-  border-radius: 2px;
-  padding: 0.05em 0.2em;
+  background: #FEF08A;
+  color: #18181B;
+  border-radius: 3px;
+  padding: 0.1em 0.3em;
+  border-bottom: 1.5px solid #F59E0B;
 }
 
 /* ============================================
    STAGE BADGE
    ============================================ */
-.stage-seed { color: #6bcb77; }
-.stage-growing { color: #e8a045; }
-.stage-published { color: #9d7cff; }
+.stage-seed {
+  color: #047857;
+}
+.stage-growing {
+  color: #B45309;
+}
+.stage-published {
+  color: #6D28D9;
+}
 
 /* ============================================
-   GRAIN TEXTURE OVERLAY
+   WARM PAPER GRAIN TEXTURE OVERLAY
    ============================================ */
 .grain-overlay::after {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.35;
+  opacity: 0.55;
 }
+
